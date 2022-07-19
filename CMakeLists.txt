@@ -3,9 +3,13 @@ cmake_minimum_required(VERSION 3.15)
 # set the project name and version
 project(Tutorial VERSION 1.0)
 
+set(CMAKE_DEBUG_POSTFIX d)
+
 add_library(tutorial_compiler_flags INTERFACE)
 target_compile_features(tutorial_compiler_flags INTERFACE cxx_std_11)
 
+# add compiler warning flags just when building this project via
+# the BUILD_INTERFACE genex
 set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU,LCC>")
 set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
 target_compile_options(tutorial_compiler_flags INTERFACE
@@ -22,6 +26,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
+if(APPLE)
+  set(CMAKE_INSTALL_RPATH "@executable_path/../lib")
+elseif(UNIX)
+  set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+endif()
 
 # configure a header file to pass some of the CMake settings
 # to the source code
@@ -32,7 +41,9 @@ add_subdirectory(MathFunctions)
 
 # add the executable
 add_executable(Tutorial tutorial.cxx)
-target_link_libraries(Tutorial PUBLIC MathFunctions tutorial_compiler_flags)
+set_target_properties(Tutorial PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
+
+target_link_libraries(Tutorial PUBLIC MathFunctions)
 
 # add the binary tree to the search path for include files
 # so that we will find TutorialConfig.h
@@ -40,7 +51,7 @@ target_include_directories(Tutorial PUBLIC
         "${PROJECT_BINARY_DIR}"
         )
 
-
+# add the install targets
 install(TARGETS Tutorial DESTINATION bin)
 install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
         DESTINATION include
@@ -84,6 +95,7 @@ set(CPACK_SOURCE_GENERATOR TGZ)
 include(CPack)
 # run in terminal in binary directory: cpack -G ZIP -C Debug
 
+# install the configuration targets
 install(EXPORT MathFunctionsTargets
         FILE MathFunctionsTargets.cmake
         DESTINATION lib/cmake/MathFunctions

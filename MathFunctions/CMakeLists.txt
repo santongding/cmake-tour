@@ -17,6 +17,7 @@ if(USE_MYMATH)
 
     # first we add the executable that generates the table
     add_executable(MakeTable MakeTable.cxx)
+  target_link_libraries(MakeTable PRIVATE tutorial_compiler_flags)
 
     # add the command to generate the source code
     add_custom_command(
@@ -47,6 +48,10 @@ target_link_libraries(MathFunctions PUBLIC tutorial_compiler_flags)
 # define the symbol stating we are using the declspec(dllexport) when
 # building on windows
 target_compile_definitions(MathFunctions PRIVATE "EXPORTING_MYMATH")
+
+# setup the version numbering
+set_property(TARGET MathFunctions PROPERTY VERSION "1.0.0")
+set_property(TARGET MathFunctions PROPERTY SOVERSION "1")
 
 # install rules
 set(installable_libs MathFunctions tutorial_compiler_flags)
