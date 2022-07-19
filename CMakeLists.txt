@@ -36,7 +36,8 @@ install(FILES "${PROJECT_BINARY_DIR}/TutorialConfig.h"
         )
 
 
-enable_testing()
+# enable dashboard scripting
+include(CTest)
 
 # does the application run
 add_test(NAME Runs COMMAND Tutorial 25)
@@ -70,4 +71,4 @@ set(CPACK_PACKAGE_VERSION_MAJOR "${Tutorial_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${Tutorial_VERSION_MINOR}")
 set(CPACK_SOURCE_GENERATOR TGZ)
 include(CPack)
-# run in terminal: cpack -G ZIP -C Debug
+# run in terminal in binary directory: cpack -G ZIP -C Debug
