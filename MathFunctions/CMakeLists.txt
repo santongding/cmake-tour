@@ -38,16 +38,16 @@ if(USE_MYMATH)
     set_target_properties(SqrtLibrary PROPERTIES
             POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS}
             )
-
+    target_link_libraries(SqrtLibrary PUBLIC tutorial_compiler_flags)
     target_link_libraries(MathFunctions PRIVATE SqrtLibrary)
 endif()
-
+target_link_libraries(MathFunctions PUBLIC tutorial_compiler_flags)
 # define the symbol stating we are using the declspec(dllexport) when
 # building on windows
 target_compile_definitions(MathFunctions PRIVATE "EXPORTING_MYMATH")
 
 # install rules
-set(installable_libs MathFunctions)
+set(installable_libs MathFunctions tutorial_compiler_flags)
 if(TARGET SqrtLibrary)
     list(APPEND installable_libs SqrtLibrary)
 endif()
