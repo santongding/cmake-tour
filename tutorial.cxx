@@ -4,7 +4,7 @@
 #include <string>
 #include "TutorialConfig.h"
 #ifdef USE_MYMATH
-#  include "MathFunctions.h"
+#include "MathFunctions.h"
 #endif
 
 
